@@ -4,7 +4,12 @@ import { RouterProvider } from 'react-router-dom'
 
 function App() {
   return (
-    <RouterProvider router={router} />
+    <div className='bg-gray-900'>
+      <RouterProvider router={router}/>
+      
+
+    </div>
+    
   )
 }
 
