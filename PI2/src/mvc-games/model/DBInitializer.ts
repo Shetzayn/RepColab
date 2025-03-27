@@ -19,7 +19,7 @@ export default class DBInitializer{
         return DBInitializer.instance
     }
 
-    async connect(dbName: string) {
+    public async connect(dbName: string) {
         if (!this.db) {
             await this.client.connect();
             this.db = this.client.db(dbName);

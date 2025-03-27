@@ -10,8 +10,10 @@ export default class GameModel{
     public async retriveGame(){
         
         await this.dbService.connect('pi2')
-        const gamesCollection = this.dbService.getCollection("games");
-        console.log(await gamesCollection.find({}).toArray())
+        const gamesCollection = this.dbService.getCollection("collection");
+        const games = await gamesCollection.find({}).project({_id: 0}).toArray()
+        
+        return games
         
     }
 }

@@ -1,26 +1,29 @@
 import axios from "axios";
 import fs from "fs";
+import path from "path"
 
-//import Game from "../types/Game";
+
 
 export default class Scrapper{
     private readonly apiKey = "e1e82998ca874af28d8ba8dd237ebe70"
+
+    private readonly pathJson = path.resolve(__dirname, "../../..") + "/database/games.json"
 
     public async getData(){
         this.addAdditionalData()
     }
 
     public countJson(){
-        const rawData = fs.readFileSync("games.json", "utf-8");
+        const rawData = fs.readFileSync(this.pathJson, "utf-8");
 
         const gamesData = JSON.parse(rawData);
 
-        console.log(gamesData[0])
+        console.log(gamesData.length)
         
     }
 
     public cleanData(){
-        const rawData = fs.readFileSync("games.json", "utf-8");
+        const rawData = fs.readFileSync(this.pathJson, "utf-8");
 
         const gamesData = JSON.parse(rawData);
 
@@ -39,7 +42,24 @@ export default class Scrapper{
             delete game.clip
         });
 
-        fs.writeFileSync("games.json", JSON.stringify(gamesData, null, 2), "utf-8");
+        fs.writeFileSync(this.pathJson, JSON.stringify(gamesData, null, 2), "utf-8");
+    }
+
+    public cleanDataMature(){
+        const rawData = fs.readFileSync(this.pathJson, "utf-8");
+
+        const gamesData = JSON.parse(rawData);
+        
+        const explicitKeywords: string[] = [
+            "sex", "hentai", "eroge", "nude", "adult", "erotic", "lust", "sexy", "nsfw", "lover"
+        ];
+        
+          // Function to filter games based on explicit keywords
+        const filteredGames = gamesData.filter((game: any) =>
+            !explicitKeywords.some(keyword => new RegExp(`\\b${keyword}\\b`, "i").test(game.name.toLowerCase()) && !game.name.toLowerCase().includes("lust from beyond") )
+        );
+
+        fs.writeFileSync(this.pathJson, JSON.stringify(filteredGames, null, 2), "utf-8");
     }
 
     private async getAdditionalData(gameId: number){
@@ -55,7 +75,7 @@ export default class Scrapper{
     }
 
     public async addAdditionalData(){
-        const rawData = fs.readFileSync("games.json", "utf-8");
+        const rawData = fs.readFileSync(this.pathJson, "utf-8");
 
         const gamesData = JSON.parse(rawData);
 
@@ -64,11 +84,11 @@ export default class Scrapper{
             console.log(`Updated ${game.name}`);
         }
 
-        fs.writeFileSync("games.json", JSON.stringify(gamesData, null, 2), "utf-8");
+        fs.writeFileSync(this.pathJson, JSON.stringify(gamesData, null, 2), "utf-8");
     }
 
 
-    
+    /*
     private async fetchGameDataRawg(page: number = 452): Promise<void> {
         try {
             const apiKey = "e1e82998ca874af28d8ba8dd237ebe70";
@@ -97,6 +117,6 @@ export default class Scrapper{
             console.error("Error fetching data:", error);
         } 
     }
-    
+    */
     
 }
